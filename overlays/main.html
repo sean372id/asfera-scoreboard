@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../global_style.css">
+    <link rel="stylesheet" href="../overlays.css">
+    <style>
+        /* ── Palette ──────────────────────────────────
+           Primary   : #2E5566
+           Dark      : #1a3a4f
+           Accent    : #ECC999
+           ────────────────────────────────────────── */
+
+        /* Seluruh bar scoreboard — floating, jarak dari tepi */
+        .scoreboard {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            width: 1800px;   /* 1920 − 60 kiri − 60 kanan */
+            /* border-radius: 10px; */
+            overflow: hidden;
+            box-shadow: 0 10px 60px rgba(0, 0, 0, 0.6);
+
+            /* Animasi slide-up dari bawah */
+            transform: translateY(180px);
+            opacity: 0;
+            transition:
+                transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity   0.4s  ease;
+            will-change: transform, opacity;
+        }
+        .scoreboard.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ── Baris nama tim ─────────────────────────── */
+        .row-names {
+            width: 100%;
+            height: 30px;
+            background: #1a3a4f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 168px;
+            border-bottom: 2px solid rgba(236, 201, 153, 0.25);
+        }
+        .team-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ECC999;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            max-width: 660px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── Baris skor utama ───────────────────────── */
+        .row-main {
+            width: 100%;
+            height: 80px;
+            background: #2E5566;
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* Kotak inisial */
+        .init-box {
+            width: 160px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .init-box.home { background: #ECC999; }
+        .init-box.away { background: #1a3a4f; }
+
+        .init-text {
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+        .init-box.home .init-text { color: #2E5566; }
+        .init-box.away .init-text { color: #ECC999; }
+
+        /* Bagian tengah */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+
+        /* Blok skor */
+        .score-blk {
+            width: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-val {
+            font-size: 62px;
+            font-weight: 900;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        /* Separator titik dua */
+        .sep-blk {
+            width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-sep {
+            font-size: 50px;
+            font-weight: 300;
+            color: rgba(236, 201, 153, 0.5);
+            line-height: 1;
+        }
+
+        /* Blok info tengah (period + timer) */
+        .info-blk {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .period-val {
+            font-size: 21px;
+            font-weight: 800;
+            color: #ECC999;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+        .timer-val {
+            font-size: 33px;
+            font-weight: 700;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .timer-val.running { color: #a8e6b8; }
+
+        /* Garis vertikal pembatas */
+        .vert-line {
+            width: 1px;
+            height: 50px;
+            background: rgba(236, 201, 153, 0.2);
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        /* ── Baris foul ─────────────────────────────── */
+        .row-fouls {
+            width: 100%;
+            height: 20px;
+            background: #1a3a4f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 170px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .foul-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            letter-spacing: 0.5px;
+        }
+        .foul-info .foul-count { color: #ECC999; font-weight: 700; }
+        .foul-info .foul-warn  { color: #ff8080; font-weight: 700; }
+
+        /* Sport badge (tengah row-fouls) */
+        .sport-badge {
+            font-size: 10px;
+            color: rgba(236, 201, 153, 0.5);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+    </style>
+    <title>Main Overlay – ASFERA 2026</title>
+</head>
+<body>
+
+<div class="scoreboard" id="scoreboard">
+
+    <!-- Baris nama tim -->
+    <div class="row-names">
+        <div class="team-name" id="home_name">HOME TEAM</div>
+        <div class="team-name" id="away_name">AWAY TEAM</div>
+    </div>
+
+    <!-- Baris skor utama -->
+    <div class="row-main">
+        <div class="init-box home"><div class="init-text" id="home_init">HOME</div></div>
+
+        <div class="center-panel">
+            <div class="score-blk">
+                <div class="score-val" id="home_score">0</div>
+            </div>
+            <div class="sep-blk"><div class="score-sep">:</div></div>
+            <div class="vert-line"></div>
+
+            <div class="info-blk">
+                <div class="period-val" id="period_val">Q1</div>
+                <div class="timer-val"  id="timer_val">00:00</div>
+            </div>
+
+            <div class="vert-line"></div>
+            <div class="sep-blk"><div class="score-sep">:</div></div>
+            <div class="score-blk">
+                <div class="score-val" id="away_score">0</div>
+            </div>
+        </div>
+
+        <div class="init-box away"><div class="init-text" id="away_init">AWAY</div></div>
+    </div>
+
+    <!-- Baris foul -->
+    <div class="row-fouls">
+        <div class="foul-info">FOUL HOME: <span class="foul-count" id="home_foul">0</span></div>
+        <div class="sport-badge" id="sport_badge">BASKETBALL</div>
+        <div class="foul-info">FOUL AWAY: <span class="foul-count" id="away_foul">0</span></div>
+    </div>
+
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

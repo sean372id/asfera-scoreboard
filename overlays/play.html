@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../global_style.css">
+    <link rel="stylesheet" href="../overlays.css">
+    <style>
+        .hud {
+            position: absolute;
+            top: 40px;
+            left: 48px;
+            width: 435px;
+            display: flex;
+            overflow: hidden;
+            transform: translateX(-520px);
+            opacity: 0;
+            transition:
+                transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity   0.35s ease;
+            will-change: transform, opacity;
+        }
+        .hud.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* ── Top: logo + timer ── */
+        .hud-logo img {
+            height: 50px;
+            width: 50px;
+            padding: 5px 0px 0px 5px;
+        }
+        .hud-top {
+            width: 100%;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(236, 201, 153, 0.3);
+        }
+        .hud-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-right: 15px;
+            height: inherit;
+            background: #1a3a4f;
+        }
+        .hud-accent {
+            width: 9px;
+            height: 100%;
+            background: #ECC999;
+        }
+        .hud-timer {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .hud-timer.running { color: #a8e6b8; }
+
+        /* ── Body: inisial + skor ── */
+        .hud-body {
+            width: 100%;
+            height: 58px;
+            background: #2E5566;
+            display: flex;
+            align-items: stretch;
+        }
+        .hud-init {
+            width: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .hud-init.home { background: #ECC999; }
+        .hud-init.away { background: #1a3a4f; }
+        .hud-init-text {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .hud-init.home .hud-init-text { color: #2E5566; }
+        .hud-init.away .hud-init-text { color: #ECC999; }
+
+        .hud-score-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .hud-score {
+            font-size: 35px;
+            font-weight: 900;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            min-width: 46px;
+            text-align: center;
+        }
+        .hud-sep {
+            font-size: 34px;
+            font-weight: 300;
+            color: rgba(236, 201, 153, 0.45);
+            line-height: 1;
+        }
+
+        /* ── Period — hanya muncul saat basketball ── */
+        .hud-period-wrap {
+            display: none;        /* hidden by default (futsal) */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            flex-shrink: 0;
+        }
+        .hud.basketball .hud-period-wrap {
+            display: flex;        /* muncul saat sport = basketball */
+        }
+        .hud-period {
+            font-size: 10px;
+            font-weight: 800;
+            color: #ECC999;
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 3px;
+            padding: 2px 6px;
+            line-height: 1.2;
+            text-align: center;
+        }
+    </style>
+    <title>Play Overlay – ASFERA 2026</title>
+</head>
+<body>
+
+<div class="hud basketball" id="hud">
+
+    <!-- Timer + Logo -->
+    <div class="hud-top">
+        <div class="hud-logo">
+            <img src="../logo.png" alt="">
+        </div>
+        <div class="hud-wrapper">
+            <div class="hud-accent"></div>
+            <div class="hud-timer" id="hud_timer">00:00</div>
+        </div>
+    </div>
+
+    <!-- Inisial + Skor + Period -->
+    <div class="hud-body">
+        <div class="hud-init home">
+            <div class="hud-init-text" id="hud_home_init">HOME</div>
+        </div>
+
+        <div class="hud-score-area">
+            <div class="hud-score" id="hud_home_score">0</div>
+
+            <!-- Period di tengah, hanya muncul di basketball -->
+            <div class="hud-period-wrap">
+                <div class="hud-period" id="hud_period">Q1</div>
+            </div>
+
+            <div class="hud-sep">:</div>
+            <div class="hud-score" id="hud_away_score">0</div>
+        </div>
+
+        <div class="hud-init away">
+            <div class="hud-init-text" id="hud_away_init">AWAY</div>
+        </div>
+    </div>
+
+</div>
+
+<script src="play.js"></script>
+</body>
+</html>

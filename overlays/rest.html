@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../global_style.css">
+    <link rel="stylesheet" href="../overlays.css">
+    <style>
+        /* ── Panel istirahat ─────────────────────────
+           Posisi: kiri-tengah layar 1920×1080
+           Ukuran: 700 × 340 px
+           Animasi: slide-in dari kiri
+        ────────────────────────────────────────────── */
+
+        .rest-panel {
+            position: absolute;
+            left: 70px;
+            top: 370px;   /* (1080 - 340) / 2 = 370 */
+            width: 700px;
+            height: 340px;
+
+            transform: translateX(-800px);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+
+            overflow: hidden;
+            box-shadow: 0 8px 48px rgba(0, 0, 0, 0.55);
+        }
+        .rest-panel.visible {
+            transform: translateX(0);
+        }
+
+        /* ── Header ─────────────────────────────────── */
+        .rest-header {
+            width: 700px;
+            height: 54px;
+            background: #1a3a4f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px 0 20px;
+            border-left: 6px solid #ECC999;
+        }
+        .rest-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ECC999;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .rest-period {
+            font-size: 18px;
+            font-weight: 700;
+            color: rgba(236, 201, 153, 0.7);
+            letter-spacing: 2px;
+        }
+
+        /* ── Separator ──────────────────────────────── */
+        .rest-sep {
+            width: 700px;
+            height: 2px;
+            background: linear-gradient(to right, #ECC999, rgba(236, 201, 153, 0.1));
+        }
+
+        /* ── Body ───────────────────────────────────── */
+        .rest-body {
+            width: 700px;
+            height: 284px;   /* 340 - 54 - 2 */
+            background: #2E5566;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 30px;
+        }
+
+        /* Nama tim */
+        .rest-names {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rest-team-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(236, 201, 153, 0.85);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Skor tengah */
+        .rest-score-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .rest-init-box {
+            width: 100px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .rest-init-box.home { background: #ECC999; }
+        .rest-init-box.away { background: #1a3a4f; }
+        .rest-init-text {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        .rest-init-box.home .rest-init-text { color: #2E5566; }
+        .rest-init-box.away .rest-init-text { color: #ECC999; }
+
+        .rest-score-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .rest-score-num {
+            font-size: 64px;
+            font-weight: 900;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            min-width: 74px;
+            text-align: center;
+        }
+        .rest-score-sep {
+            font-size: 52px;
+            font-weight: 300;
+            color: rgba(236, 201, 153, 0.4);
+            line-height: 1;
+        }
+
+        /* Foul row bawah */
+        .rest-fouls {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 14px;
+        }
+        .rest-foul-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .rest-foul-text span { color: #ECC999; font-weight: 700; }
+        .rest-foul-text span.warn { color: #ff8080; }
+    </style>
+    <title>Rest Overlay – ASFERA 2026</title>
+</head>
+<body>
+
+<div class="rest-panel" id="rest_panel">
+
+    <!-- Header -->
+    <div class="rest-header">
+        <div class="rest-title" id="rest_label">ISTIRAHAT</div>
+        <div class="rest-period" id="rest_period">Q2</div>
+    </div>
+    <div class="rest-sep"></div>
+
+    <!-- Body -->
+    <div class="rest-body">
+
+        <!-- Nama tim -->
+        <div class="rest-names">
+            <div class="rest-team-name" id="rest_home_name">HOME TEAM</div>
+            <div class="rest-team-name" id="rest_away_name">AWAY TEAM</div>
+        </div>
+
+        <!-- Skor -->
+        <div class="rest-score-row">
+            <div class="rest-init-box home">
+                <div class="rest-init-text" id="rest_home_init">HOME</div>
+            </div>
+            <div class="rest-score-center">
+                <div class="rest-score-num" id="rest_home_score">0</div>
+                <div class="rest-score-sep">:</div>
+                <div class="rest-score-num" id="rest_away_score">0</div>
+            </div>
+            <div class="rest-init-box away">
+                <div class="rest-init-text" id="rest_away_init">AWAY</div>
+            </div>
+        </div>
+
+        <!-- Foul -->
+        <div class="rest-fouls">
+            <div class="rest-foul-text">
+                FOUL HOME: <span id="rest_home_foul">0</span>
+            </div>
+            <div class="rest-foul-text">
+                FOUL AWAY: <span id="rest_away_foul">0</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="rest.js"></script>
+</body>
+</html>

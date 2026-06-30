@@ -1,0 +1,12 @@
+/* overlays.css */
+/* Atur browser source OBS: Width=1920, Height=1080 */
+
+html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}

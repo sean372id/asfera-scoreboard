@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global_style.css">
+    <style>
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #22252c; }
+        ::-webkit-scrollbar-thumb { background: #3c404d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #5a5f73; }
+
+        /* ── Base ── */
+        body { background: #272a33; padding-bottom: 16px; }
+
+        p  { font-size: 12px; }
+        small { font-size: 10px; color: #9aa0b0; display: block; }
+
+        button, select, input {
+            padding: 4px 6px;
+            border-radius: 5px;
+            border: none;
+            background: #22252c;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        button:hover   { background: #3c404d; }
+        button:active  { background: #5a5f73; }
+        button.active  { background: #5a5f73; outline: 1px solid #9aa0b0; }
+        button.btn-safe   { background: #1e4d30; }
+        button.btn-safe:hover { background: #265e3a; }
+        button.btn-danger { background: #5c1c1c; }
+        button.btn-danger:hover { background: #6e2222; }
+
+        input[type="number"]  { -moz-appearance: textfield; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="text"], select { width: 100%; }
+
+        /* ── Section card ── */
+        .card {
+            background: #3c404d;
+            border-radius: 6px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .card-title {
+            font-size: 10px;
+            color: #9aa0b0;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        /* ── Overlay row ── */
+        .ov-row {
+            background: #3c404d;
+            border-radius: 6px;
+            padding: 5px 7px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ov-row p { font-size: 13px; font-weight: 600; }
+        .ov-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #555;
+            flex-shrink: 0;
+        }
+        .ov-dot.online { background: #4caf50; }
+
+        /* ── Sport switch ── */
+        .sport-row { display: flex; gap: 4px; }
+        .sport-row button { flex: 1; font-size: 12px; font-weight: 600; padding: 5px 4px; }
+
+        /* ── Score ── */
+        .score-row { display: flex; gap: 4px; align-items: stretch; }
+        .score-box {
+            flex: 1;
+            background: #22252c;
+            border-radius: 5px;
+            padding: 5px 4px;
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+        }
+        .score-box label { font-size: 10px; color: #9aa0b0; }
+        .score-num {
+            font-size: 34px;
+            font-weight: 900;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            min-width: 48px;
+            text-align: center;
+        }
+        .score-btns { display: flex; gap: 3px; width: 100%; }
+        .score-btns button { flex: 1; font-size: 15px; font-weight: 700; padding: 2px; }
+        .score-btns-multi { display: none; gap: 3px; width: 100%; }
+        .score-btns-multi button { flex: 1; font-size: 11px; font-weight: 700; padding: 2px; background: #1e3a5c; }
+        .score-btns-multi button:hover { background: #264d7a; }
+        .basketball .score-btns-multi { display: flex; }
+        .vs-sep { display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #5a5f73; padding: 0 1px; }
+        .score-reset { font-size: 10px; background: transparent; color: #9aa0b0; padding: 2px 4px; width: 100%; text-align: center; }
+        .score-reset:hover { color: #fff; background: transparent; }
+
+        /* ── Period ── */
+        .period-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .period-disp {
+            font-size: 18px; font-weight: 800;
+            background: #22252c; border-radius: 5px;
+            padding: 4px 14px; min-width: 64px; text-align: center;
+        }
+
+        /* ── Foul ── */
+        .foul-row { display: flex; gap: 4px; }
+        .foul-box {
+            flex: 1; background: #22252c; border-radius: 5px;
+            padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+        }
+        .foul-box label { font-size: 9px; color: #9aa0b0; }
+        .foul-num {
+            font-size: 22px; font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            min-width: 36px; text-align: center;
+            transition: color 0.2s;
+        }
+        .foul-btns { display: flex; gap: 3px; width: 100%; }
+        .foul-btns button { flex: 1; font-size: 13px; font-weight: 700; padding: 2px; }
+        .foul-reset { font-size: 10px; background: transparent; color: #9aa0b0; padding: 2px 4px; align-self: flex-start; }
+        .foul-reset:hover { color: #fff; background: transparent; }
+
+        /* ── Timer ── */
+        .timer-disp {
+            background: #22252c; border-radius: 5px;
+            padding: 5px 8px;
+            font-size: 30px; font-weight: 800;
+            text-align: center; letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-btns { display: flex; gap: 3px; }
+        .timer-btns button { flex: 1; font-size: 12px; font-weight: 600; }
+        .timer-btns button.active { background: #5c1c1c; }
+        .timer-extra { display: flex; gap: 3px; flex-wrap: wrap; }
+        .timer-extra button { flex: 1; min-width: 30px; font-size: 10px; padding: 3px 2px; }
+        .timer-extra button.active { background: #1e4d30; }
+
+        /* ── Team data ── */
+        .mode-row { display: flex; gap: 4px; }
+        .mode-row button { flex: 1; font-size: 11px; }
+        .csv-panel { display: flex; flex-direction: column; gap: 3px; }
+        input[type="file"] { font-size: 10px; padding: 3px 4px; width: 100%; }
+        .nav-row { display: flex; gap: 3px; align-items: center; }
+        .nav-row select { flex: 1; font-size: 11px; }
+        .teams-row { display: flex; gap: 5px; }
+        .team-col { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+        .team-col label { font-size: 10px; color: #9aa0b0; margin-bottom: 1px; display: block; }
+        .team-col input[type="text"] { font-size: 11px; padding: 4px 5px; }
+        .team-col input.init { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .team-divider { width: 1px; background: #22252c; flex-shrink: 0; }
+        .apply-btn { background: #1e3a5c; font-size: 12px; font-weight: 600; width: 100%; padding: 6px; }
+        .apply-btn:hover { background: #264d7a; }
+        .action-row { display: flex; gap: 4px; align-items: center; }
+        .action-row .apply-btn { flex: 1; }
+        .clear-btn { font-size: 11px; padding: 4px 6px; }
+
+        /* ── Timeout ── */
+        .timeout-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .timeout-row input[type="checkbox"] {
+            width: 13px; height: 13px;
+            padding: 0; cursor: pointer;
+            accent-color: #ECC999;
+            flex-shrink: 0;
+        }
+        .timeout-row label {
+            font-size: 11px;
+            color: #9aa0b0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .timeout-row.checked label { color: #ECC999; font-weight: 600; }
+
+        /* ── Footer ── */
+        .footer { font-size: 9px; color: #5a5f73; text-align: center; padding: 10px 4px 2px; }
+    </style>
+    <title>Scoreboard Control – ASFERA 2026</title>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Overlay Toggles -->
+    <div class="ov-row">
+        <p>Main Overlay</p>
+        <div class="wrapper">
+            <span class="ov-dot" id="main_dot" title="Offline"></span>
+            <button class="btn-safe" id="main_toggle">Show</button>
+        </div>
+    </div>
+    <div class="ov-row">
+        <p>Play HUD</p>
+        <div class="wrapper">
+            <span class="ov-dot" id="play_dot" title="Offline"></span>
+            <button class="btn-safe" id="play_toggle">Show</button>
+        </div>
+    </div>
+    <div class="ov-row">
+        <p>Rest Overlay</p>
+        <div class="wrapper">
+            <span class="ov-dot" id="rest_dot" title="Offline"></span>
+            <button class="btn-safe" id="rest_toggle">Show</button>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Sport -->
+    <div class="card">
+        <span class="card-title">Sport</span>
+        <div class="sport-row">
+            <button id="btn_basketball" class="active">🏀 Basketball</button>
+            <button id="btn_futsal">⚽ Futsal</button>
+        </div>
+    </div>
+
+    <!-- Score -->
+    <div class="card">
+        <span class="card-title">Score</span>
+        <div class="score-row basketball" id="score_row">
+            <div class="score-box">
+                <label id="home_label">HOME</label>
+                <div class="score-num" id="home_score_disp">0</div>
+                <div class="score-btns">
+                    <button id="home_score_plus">+</button>
+                    <button id="home_score_minus">−</button>
+                </div>
+                <div class="score-btns-multi">
+                    <button id="home_score_plus2">+2</button>
+                    <button id="home_score_plus3">+3</button>
+                </div>
+            </div>
+            <div class="vs-sep">:</div>
+            <div class="score-box">
+                <label id="away_label">AWAY</label>
+                <div class="score-num" id="away_score_disp">0</div>
+                <div class="score-btns">
+                    <button id="away_score_plus">+</button>
+                    <button id="away_score_minus">−</button>
+                </div>
+                <div class="score-btns-multi">
+                    <button id="away_score_plus2">+2</button>
+                    <button id="away_score_plus3">+3</button>
+                </div>
+            </div>
+        </div>
+        <button class="score-reset" id="score_reset">↺ Reset Score</button>
+    </div>
+
+    <!-- Period & Fouls -->
+    <div class="card">
+        <span class="card-title">Period &amp; Fouls</span>
+        <div class="period-row">
+            <button id="period_prev" style="padding:4px 10px;">◁</button>
+            <div class="period-disp" id="period_disp">Q1</div>
+            <button id="period_next" style="padding:4px 10px;">▷</button>
+        </div>
+        <div class="timeout-row" id="timeout_row">
+            <input type="checkbox" id="rest_timeout">
+            <label for="rest_timeout">Timeout — tampilkan "TIMEOUT" di overlay rest</label>
+        </div>
+        <div class="foul-row">
+            <div class="foul-box">
+                <label>HOME FOUL</label>
+                <div class="foul-num" id="home_foul_disp">0</div>
+                <div class="foul-btns">
+                    <button id="home_foul_plus">+</button>
+                    <button id="home_foul_minus">−</button>
+                </div>
+            </div>
+            <div class="foul-box">
+                <label>AWAY FOUL</label>
+                <div class="foul-num" id="away_foul_disp">0</div>
+                <div class="foul-btns">
+                    <button id="away_foul_plus">+</button>
+                    <button id="away_foul_minus">−</button>
+                </div>
+            </div>
+        </div>
+        <button class="foul-reset" id="foul_reset">↺ Reset Semua Foul</button>
+    </div>
+
+    <!-- Timer -->
+    <div class="card">
+        <span class="card-title">Timer</span>
+        <div class="timer-disp" id="timer_disp">00 : 00</div>
+        <div class="timer-btns">
+            <button id="timer_start">▶ Start</button>
+            <button id="timer_stop">⏹ Stop</button>
+            <button id="timer_reset">↺ Reset</button>
+        </div>
+        <div class="timer-extra">
+            <button id="timer_add1"   title="Tambah 1 menit">+1m</button>
+            <button id="timer_add5"   title="Tambah 5 menit">+5m</button>
+            <button id="timer_add10"  title="Tambah 10 menit">+10m</button>
+            <button id="timer_add15"  title="Tambah 15 menit">+15m</button>
+            <button id="timer_sub1"   title="Kurangi 1 menit">−1m</button>
+            <button id="timer_add30s" title="Tambah 30 detik">+30s</button>
+            <button id="timer_add1s"  title="Tambah 1 detik">+1s</button>
+            <button id="timer_sub1s"  title="Kurangi 1 detik">−1s</button>
+            <button id="timer_toggle_cd" title="Aktifkan/nonaktifkan hitung mundur">⇅ CD</button>
+        </div>
+    </div>
+
+    <!-- Team Data -->
+    <div class="card">
+        <span class="card-title">Team Data</span>
+        <div class="mode-row">
+            <button id="mode_auto" class="active" title="Load dari file CSV">📄 CSV</button>
+            <button id="mode_manual" title="Input manual">✏️ Manual</button>
+        </div>
+        <div class="csv-panel" id="csv_panel">
+            <input type="file" id="csv_file" accept=".csv"
+                title="Format CSV: NamaLengkapHome, InisialHome, NamaLengkapAway, InisialAway">
+            <div class="nav-row">
+                <button id="csv_prev">◁</button>
+                <select id="csv_select"><option value="">— Belum ada data —</option></select>
+                <button id="csv_next">▷</button>
+            </div>
+        </div>
+        <div class="teams-row">
+            <div class="team-col">
+                <label>HOME</label>
+                <input type="text" id="home_fullname" placeholder="Nama Lengkap">
+                <input type="text" id="home_initial" class="init" placeholder="INIT" maxlength="4">
+            </div>
+            <div class="team-divider"></div>
+            <div class="team-col">
+                <label>AWAY</label>
+                <input type="text" id="away_fullname" placeholder="Nama Lengkap">
+                <input type="text" id="away_initial" class="init" placeholder="INIT" maxlength="4">
+            </div>
+        </div>
+        <div class="action-row">
+            <button class="apply-btn" id="apply_team">✔ Apply</button>
+            <button class="clear-btn" id="clear_team">✕ Clear</button>
+        </div>
+    </div>
+
+</div>
+
+<p class="footer">Made with ❤️ for ASFERA 2026 by Sean Al-Ghiffarny</p>
+
+<script src="control.js"></script>
+</body>
+</html>
