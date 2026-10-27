@@ -1,4 +1,4 @@
-> Dokumen ini ditujukan untuk anak panitia ASFERA 2027, untuk penggunaan umum dapat mengabaikan file ini.
+> Dokumen ini ditujukan untuk anak panitia ASFERA 2027, untuk penggunaan umum dapat mengabaikan file ini. Dokumen README ini dibantu oleh Claude. Tanyakan lagi ke abang-abang kelas di tim publik yaa!!!
 
 # 📡 Panduan Lengkap Persiapan Livestreaming ASFERA 2027
 
